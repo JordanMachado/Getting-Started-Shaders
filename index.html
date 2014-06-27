@@ -4,7 +4,8 @@
 	<meta charset="UTF-8">
 	<title>Getting started with shaders</title>
 	<!-- Libs -->
-	<script src="js/libs/three.js"></script>
+	<script src="js/libs/three.min.js"></script>
+	<script src="js/libs/stats.min.js"></script>
 	
 </head>
 <body>
@@ -13,14 +14,17 @@
 	<script type="x-shader/x-vertex" id="vertexshader">
 		
 		// switch on high precision floats
+		uniform float amplitude;	
 		varying vec2 vU;
+		varying vec3 Vnormal;
 		attribute float displacement;
 		
 		
 		void main()
 		{
+			Vnormal = normal;
 			vU = uv;
-			vec3 newPosition = position + normal * vec3(displacement);
+			vec3 newPosition = position + normal * vec3(displacement*amplitude);
 			gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition,1);
 		}
 		
@@ -29,10 +33,22 @@
 	<script type="x-shader/x-fragment" id="fragmentshader">
 	
 		varying vec2 vU;
-
+		varying vec3 Vnormal;	
 		void main() 
 		{
-			  gl_FragColor = vec4(vU,0.2 , 1. );
+			/*
+				glFragColor -> vec4 (R,G,B,A)
+			*/
+
+			vec3 light = vec3(0.5, 0.8, 1.0);
+  			light = normalize(light); 
+  			float color = max(0.0,dot(light,vec3(vU,0.0)));
+			  gl_FragColor = vec4
+			  (
+			  	vU,	
+			  	color,
+			  	1
+			  );
 		}
 	
 	</script>
