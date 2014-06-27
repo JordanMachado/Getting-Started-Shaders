@@ -5,7 +5,8 @@ var scene,camera,renderer;
 
 var vertexShaderElement = document.getElementById("vertexshader");
 var fragmentshaderElement = document.getElementById("fragmentshader");
-
+var sphere;
+var uniforms;
 
 function init()
 {
@@ -17,13 +18,26 @@ function init()
 	camera = new THREE.PerspectiveCamera(45,window.innerWidth / window.innerHeight,1,10000);
 	camera.position.z = 300;
 
+	// STATS
+	stats = new Stats();
+	stats.setMode(1);
+	stats.domElement.style.position = 'absolute';
+	stats.domElement.style.top = '0px';
+	stats.domElement.style.zIndex = 100;
+	document.body.appendChild(stats.domElement); 
+
 	// RENDERER
 	renderer = new THREE.WebGLRenderer();
 	renderer.setClearColor( 0xf0f0f0 );
 	renderer.setSize(window.innerWidth,window.innerHeight);
 	document.body.appendChild(renderer.domElement);
 
-
+	uniforms = {
+	  amplitude: {
+	    type: 'f', // a float
+	    value: 0
+	  }
+	};
 	var attributes = {
 	  displacement: {
 	    type: 'f', // a float
@@ -34,6 +48,7 @@ function init()
 	// create the sphere's material
 	var shaderMaterial = new THREE.ShaderMaterial(
 	{
+		uniforms:uniforms,
 		attributes:attributes,
 		vertexShader:   vertexShaderElement.textContent,
 		fragmentShader: fragmentshaderElement.textContent	
@@ -44,7 +59,7 @@ function init()
 	
 	// create a new mesh with sphere geometry -
 	// we will cover the sphereMaterial next!
-	var sphere = new THREE.Mesh(
+	sphere = new THREE.Mesh(
 	   new THREE.SphereGeometry(radius, segments, rings),
 	   shaderMaterial);
 
@@ -54,24 +69,31 @@ function init()
 
 	for (var v = 0; v < verts.length; v++) 
 	{
-  		values.push(Math.random() * 30);
+		if(v%2 == 0)
+  			values.push(8);
+  		else
+  			values.push(2);
 	}
 	// add the sphere to the scene
 	scene.add(sphere);
-	renderer.render(scene,camera);
 
 }
 
 function animate()
 {
 	requestAnimationFrame(animate);
+	stats.update();
 	render();
 }
 
+
 function render()
 {
+	 //var theta = (Date.now() * vitesse_angulaire) + angle_initial;
+	uniforms.amplitude.value = Math.cos(Date.now()*0.001);
+	//sphere.rotation.y += 0.01;
 	renderer.render(scene,camera);
 }
 
 init();
-//animate();
+animate();
