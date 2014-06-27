@@ -14,7 +14,7 @@ function init()
 	scene = new THREE.Scene();
 
 	// CAMERA
-	camera = new THREE.PerspectiveCamera(70,window.innerWidth / window.innerHeight,1,10000);
+	camera = new THREE.PerspectiveCamera(45,window.innerWidth / window.innerHeight,1,10000);
 	camera.position.z = 300;
 
 	// RENDERER
@@ -23,10 +23,18 @@ function init()
 	renderer.setSize(window.innerWidth,window.innerHeight);
 	document.body.appendChild(renderer.domElement);
 
-	
+
+	var attributes = {
+	  displacement: {
+	    type: 'f', // a float
+	    value: [] // an empty array
+	  }
+	};
+
 	// create the sphere's material
 	var shaderMaterial = new THREE.ShaderMaterial(
 	{
+		attributes:attributes,
 		vertexShader:   vertexShaderElement.textContent,
 		fragmentShader: fragmentshaderElement.textContent	
 	});
@@ -37,11 +45,20 @@ function init()
 	// create a new mesh with sphere geometry -
 	// we will cover the sphereMaterial next!
 	var sphere = new THREE.Mesh(
-	   new THREE.Sphere(radius, segments, rings),
+	   new THREE.SphereGeometry(radius, segments, rings),
 	   shaderMaterial);
-	
+
+	var verts = sphere.geometry.vertices;
+
+	var values = attributes.displacement.value;
+
+	for (var v = 0; v < verts.length; v++) 
+	{
+  		values.push(Math.random() * 30);
+	}
 	// add the sphere to the scene
 	scene.add(sphere);
+	renderer.render(scene,camera);
 
 }
 
@@ -57,4 +74,4 @@ function render()
 }
 
 init();
-animate();
+//animate();

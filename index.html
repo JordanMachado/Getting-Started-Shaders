@@ -13,26 +13,26 @@
 	<script type="x-shader/x-vertex" id="vertexshader">
 		
 		// switch on high precision floats
-		#ifdef GL_ES
-		precision highp float;
-		#endif
+		varying vec2 vU;
+		attribute float displacement;
+		
 		
 		void main()
 		{
-			gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+			vU = uv;
+			vec3 newPosition = position + normal * vec3(displacement);
+			gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition,1);
 		}
 		
 	</script>
 	
 	<script type="x-shader/x-fragment" id="fragmentshader">
 	
-		#ifdef GL_ES
-		precision highp float;
-		#endif
-		
-		void main()
+		varying vec2 vU;
+
+		void main() 
 		{
-			gl_FragColor 	= vec4(1.0,0.0,1.0,1.0);
+			  gl_FragColor = vec4(vU,0.2 , 1. );
 		}
 	
 	</script>
