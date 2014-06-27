@@ -23,16 +23,13 @@ function init()
 	renderer.setSize(window.innerWidth,window.innerHeight);
 	document.body.appendChild(renderer.domElement);
 
-	console.log(vertexShader.textContent);
-	// create the sphere's material
-	var shaderMaterial = new THREE.ShaderMaterial({
-		vertexShader:   vertexShaderElement.textContent,
-		fragmentShader: fragmentshaderElement.textContent	});
-
-
-	//uniforms = { time: { type: "f", value: 1.0 }, resolution: { type: "v2", value: new THREE.Vector2() } };
 	
-
+	// create the sphere's material
+	var shaderMaterial = new THREE.ShaderMaterial(
+	{
+		vertexShader:   vertexShaderElement.textContent,
+		fragmentShader: fragmentshaderElement.textContent	
+	});
 	
 	// set up the sphere vars
 	var radius = 50, segments = 16, rings = 16;
@@ -47,11 +44,13 @@ function init()
 	scene.add(sphere);
 
 }
+
 function animate()
 {
 	requestAnimationFrame(animate);
 	render();
 }
+
 function render()
 {
 	renderer.render(scene,camera);
